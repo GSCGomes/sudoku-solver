@@ -282,13 +282,14 @@ void Sudoku::showPossibilites(int in_value){
 
   cout << endl << "Possibilities for number: " << in_value << endl << endl;;
   for(int i = 0; i < 9; i++){
-    for(int j = 0; j < 9; j++)
-      cout << cell[i][j].canItBe(in_value) << " ";
+    for(int j = 0; j < 9; j++){
+      cout << " " << cell[i][j].canItBe(in_value) << " ";
+      if(j == 2 || j == 5) cout << "|";
+    }
+    if(i == 2 || i == 5)
+      cout << endl << "-----------------------------";
     cout << endl;
   }
   cout << endl;
 }
-
-
-
 /***************End of Sudoku methods**********************/
