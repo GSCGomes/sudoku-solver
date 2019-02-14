@@ -24,12 +24,23 @@ int main(int argc, char** argv){
 
   Sudoku S;
 
+
   S.writeFromFile(input);
   S.printSudoku();
+  cout << endl;
 
+  int n = 10;
+  while(n){
 
+    while(S.checkCells());
+    while(S.checkRows());
+    while(S.checkCols());
+    while(S.checkSectors());
 
+    n --;
+  }
 
+  S.printSudoku();
 
   return 1;
 }
