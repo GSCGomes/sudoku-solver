@@ -58,6 +58,19 @@ void Cell::cannotBe(int value){
   hashCheck_[value] = FALSE;
 
 }
+
+//returns the only value that the cell can assume, check possibilities before calling this
+int Cell::onlyValue(){
+
+  int exit = 0;
+  for(int i = 0; i < 9; i++){
+    if(hashCheck_[i]){
+      exit = i+1;
+    }
+  }
+
+  return exit;
+}
 /*****************End of Cell methods**********************/
 
 
@@ -147,5 +160,19 @@ void Sudoku::printSudoku(){
 
   cout << endl << endl;
 }
+
+// //Checks cells' possibilities
+// void Sudoku::checkCells(){
+//
+//   for(int i = 0; i < 9; i++){
+//     for(int j = 0; j < 9; j++){
+//       if( cell[i][j].possibilities() == 1)
+//         cell[i][j]
+//     }
+//   }
+//
+// }
+
+
 
 /***************End of Sudoku methods**********************/

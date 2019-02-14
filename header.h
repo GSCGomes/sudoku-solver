@@ -45,6 +45,9 @@ public:
   //tells to the cell that it can't be a certain value
   void cannotBe(int);
 
+  //returns the only value that the cell can assume, check possibilities before calling this
+  int onlyValue();
+
 };
 
 class Sudoku{
@@ -75,7 +78,7 @@ public:
   void setState(bool);
 
   //Fills the cells with data from file
-  void writeFromFile(FILE * );  
+  void writeFromFile(FILE * );
 
   //Prints the whole sudoku on screen
   void printSudoku();
