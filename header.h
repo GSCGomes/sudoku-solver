@@ -100,6 +100,9 @@ public:
   int checkSectors();
 
   void showPossibilites(int);
+
+  void showPossibilites();
+
 };
 
 

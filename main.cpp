@@ -32,15 +32,17 @@ int main(int argc, char** argv){
   while(changes){
     changes = 0;
     count ++;
-    changes += S.checkCells();
     changes += S.checkRows();
     changes += S.checkCols();
     changes += S.checkSectors();
+    changes += S.checkCells();
   }
 
   S.printSudoku();
 
   cout << " i = " << count<< endl;
+
+  // S.showPossibilites();
 
   fclose(input);
   fclose(output);
