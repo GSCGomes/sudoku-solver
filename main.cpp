@@ -37,18 +37,12 @@ int main(int argc, char** argv){
   //main program loop, do some standard checks first,
   //if we get stuck do some more advanced checks
   while(changes){
-    while(changes){
-      changes = 0;
-      count ++;
-      changes += S.checkSectors();
-      changes += S.checkRows();
-      changes += S.checkCols();
-      changes += S.checkCells();
-    }
     changes = 0;
-    changes += S.proCheckSectors();
-    changes += S.proCheckRows();
-    changes += S.proCheckCols();
+    count ++;
+    changes += S.checkSectors();
+    changes += S.checkRows();
+    changes += S.checkCols();
+    changes += S.checkCells();
   }
 
   cout << endl << "  And this is your solved sudoku: " << endl;

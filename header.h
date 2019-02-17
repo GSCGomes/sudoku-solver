@@ -63,7 +63,7 @@ class Sudoku{
 public:
 
   Cell cell[9][9];
-  bool state_; //it's TRUE if the program can't find anything else to do
+  int solvedCells_;
 
   //Constructor
   Sudoku();
@@ -71,17 +71,8 @@ public:
   //Destructor
   ~Sudoku();
 
-  //Receives coordinates and returns value, 0 for an empty cell
-  int value(int, int);
-
-  //Returns TRUE if the program can't find anything else to do
-  bool state();
-
   //Sets the value of a given cell
   void setValue(int, int, int);
-
-  //Sets sudoku state
-  void setState(bool);
 
   //Fills the cells with data from file
   void writeFromFile(FILE * );
@@ -103,15 +94,6 @@ public:
 
   //Checks sectors and returns number of changes
   int checkSectors();
-
-  //Checks rows and returns number of changes
-  int proCheckRows();
-
-  //Checks collumns and returns number of changes
-  int proCheckCols();
-
-  //Checks sectors and returns number of changes
-  int proCheckSectors();
 
   void showPossibilites(int);
 
