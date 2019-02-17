@@ -63,7 +63,7 @@ void Cell::cannotBe(int value){
 int Cell::onePossibleValue(){
 
   int exit = 0;
-  for(int i = 0; i < 9; i++){
+  for(int i = 8; i >= 0; i--){
     if(hashCheck_[i]){
       exit = i+1;
     }
@@ -91,6 +91,10 @@ void Sudoku::setValue(int in_value, int row, int col){
 
     cell[row][col].setValue(in_value);
     int sec = sector(row, col);
+    if(!sec){
+      cout << "error position 1" << endl;
+      return;
+    }
 
     //modify hashCheck of cells on same row
     for(int i = 0; i < 9; i++){
@@ -286,6 +290,18 @@ int Sudoku::checkSectors(){
   }
 
   return changes;
+}
+
+//Checks if sudoku is valid in returns TRUE or FALSE
+bool Sudoku::amIValid(){
+
+  for(int i = 0; i < 9; i ++)
+    for(int j = 0; j < 9; j ++){
+      if( !(cell[i][j].possibilities()) )
+        return FALSE;
+    }
+
+  return TRUE;
 }
 
 void Sudoku::showPossibilites(int in_value){

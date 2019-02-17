@@ -95,6 +95,9 @@ public:
   //Checks sectors and returns number of changes
   int checkSectors();
 
+  //Checks if sudoku is valid in returns TRUE or FALSE
+  bool amIValid();
+
   void showPossibilites(int);
 
   void showPossibilites();

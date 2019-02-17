@@ -18,7 +18,7 @@ int sector(int row, int col){
   int exit = 0;
 
   if((row < 0) || (col < 0) || (row > 8) || (col > 8)){ //if coordinates are invalid
-    cout << "invalid coordinates." << "row = " << row << "  col = " << col << endl;
+    cout << "invalid coordinates." << " row = " << row << "  col = " << col << endl;
     return exit;
   }
 
