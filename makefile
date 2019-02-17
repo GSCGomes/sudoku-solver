@@ -1,6 +1,5 @@
 CC = g++
 CFLAGS = -Wall -c
-OUTPUT_FILENAME = output.csv
 
 sudoku-solver: solver.o sudoku.o main.o
 	$(CC) -o sudoku-solver solver.o sudoku.o main.o

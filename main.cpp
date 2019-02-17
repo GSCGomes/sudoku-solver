@@ -10,9 +10,11 @@ using namespace std;
 
 int main(int argc, char** argv){
 
+  cout << endl << "SUDOKU SOLVER made by Guilherme Gomes" << endl;
+
   FILE * input;
   if(! (input = fopen(argv[1], "r") )){
-    cout << "Error openning file. Exiting." << endl;
+    cout << "Error openning sudoku file. Exiting." << endl;
     return -1;
   }
 
@@ -22,6 +24,8 @@ int main(int argc, char** argv){
     return -1;
   }
 
+  cout << endl << "  This is the sudoku puzzle you entered: " << endl;
+
   Sudoku S;
 
   S.writeFromFile(input);
@@ -29,20 +33,32 @@ int main(int argc, char** argv){
 
   int changes = 1;
   int count = -1;
+
+  //main program loop, do some standard checks first,
+  //if we get stuck do some more advanced checks
   while(changes){
+    while(changes){
+      changes = 0;
+      count ++;
+      changes += S.checkSectors();
+      changes += S.checkRows();
+      changes += S.checkCols();
+      changes += S.checkCells();
+    }
     changes = 0;
-    count ++;
-    changes += S.checkRows();
-    changes += S.checkCols();
-    changes += S.checkSectors();
-    changes += S.checkCells();
+    changes += S.proCheckSectors();
+    changes += S.proCheckRows();
+    changes += S.proCheckCols();
   }
 
+  cout << endl << "  And this is your solved sudoku: " << endl;
   S.printSudoku();
+  cout << "  We wrote this solution in a file named " << OUTPUT_FILENAME << endl;
 
-  cout << " i = " << count<< endl;
+  cout << endl << " i = " << count<< endl;
 
   // S.showPossibilites();
+  S.writeToFile(output);
 
   fclose(input);
   fclose(output);

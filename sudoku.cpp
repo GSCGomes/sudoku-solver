@@ -18,7 +18,7 @@ Cell::Cell(){
 Cell::~Cell(){}
 
 //returns the value of the cell, 0 if the cell is empty
-int Cell::value(){ return value_; };
+int Cell::value(){ return value_;};
 
 //receives a value and tells whether that cell can assume that value given the hashCheck_ array
 bool Cell::canItBe(int in_value){
@@ -95,6 +95,8 @@ bool Sudoku::state(){ return state_; }
 //Sets the value of a given cell
 void Sudoku::setValue(int in_value, int row, int col){
 
+    if(in_value <= 0 || in_value > 9) in_value = 0;
+
     cell[row][col].setValue(in_value);
     int sec = sector(row, col);
 
@@ -133,8 +135,7 @@ void Sudoku::writeFromFile(FILE * file){
       if(c == EOF) break;
       c = fgetc(file);
       if(c >= 48 && c <= 57){ //if it's a number
-        // cell[i][j].setValue(c - 48);
-        setValue(c - 48, i, j);
+          setValue(c - 48, i, j);
         c = fgetc(file);
       }
     }
@@ -142,9 +143,21 @@ void Sudoku::writeFromFile(FILE * file){
 
 }
 
+//Writes the file with finished sudoku
+void Sudoku::writeToFile(FILE * file){
+
+  for(int i = 0; i < 9; i ++){
+    for(int j = 0; j < 9; j++){
+      if(value(i,j)) fprintf(file, "%d", value(i,j));
+      if(j < 8) fprintf(file, ",");
+    }
+    fprintf(file, "\n");
+  }
+  fprintf(file, "\n");
+}
+
 //Prints the whole sudoku on screen
 void Sudoku::printSudoku(){
-
 
   for(int i = 0; i < 9; i++){
     cout << endl << "  ";
@@ -183,61 +196,27 @@ int Sudoku::checkRows(){
 
   int n = 0; //how many cells of this row can assume this value? this variable stores the answer to this question
   int changes = 0;
-  int set = 0; //0 -> reading, 1 -> writing, 2 -> advanced check
-  int sectors[3] = {0,0,0};
+  bool rw = 0; //0 -> reading, 1 -> writing
 
   for(int currentValue = 1; currentValue <= 9; currentValue++){
     for(int row = 0; row < 9; row ++){
       for(int col = 0; col < 9; col ++){
         if(cell[row][col].canItBe(currentValue) && (!cell[row][col].value())){
-          if(set == 0) n ++;
+          if(rw == 0) n ++;
           //found one and it's currently reading the row
-          else if(set == 1){
+          else if(rw == 1){
           //found one but we already read the row, we are just searching for this cell to write its value
             setValue(currentValue, row, col);
-            set = 0;
+            rw = 0;
             changes++;
             col = 9; //get out of the for loop
           }
-          else if(set == 2){
-          //found one but we already read the row, we are just checking if all the possibilities are in the same sector
-            if(!sectors[0]) sectors[0] = sector(row,col);
-            else if(!sectors[1]) sectors[1] = sector(row,col);
-            else if(!sectors[2]) sectors[2] = sector(row,col);
-
-          }
-        }
-
-        if(col == 8 && set == 2){ //if this is the last col iteration and we are doing advanced check (set = 2)
-          if(!sectors[2]) sectors[2] = sectors[1];
-          //if the sectors[2] equals 0, it means that there were only 2 possible places
-          //so we write the value of sectors[1] on it to treate this as we would if there were 3 possible places
-          if((sectors[0] == sectors[1]) && (sectors[1] == sectors[2])){
-          //if all the possibilities are in the same sector
-          //iterate throughout the sector and say to the cells out of the row that it cant be the current value
-            for(int i = 0; i < 3; i++){
-              for(int j = 0; j < 3; j++){
-                if(row != (firstRowOfSector(sectors[0]) + i) //if this is not the current row
-                && cell[firstRowOfSector(sectors[0]) + i][firstColOfSector(sectors[0]) + j].canItBe(currentValue)){
-                  cell[firstRowOfSector(sectors[0]) + i][firstColOfSector(sectors[0]) + j].cannotBe(currentValue);
-                  changes++;
-                  cout << "done that fancy thing in the rows" << endl;
-                }
-              }
-            }
-          }
-          set = 0;
-          sectors[0] = sectors[1] = sectors[2] = 0;
         }
       }
 
       if(n == 1){ //if there's only one possible place for the current value on this row
         row --;
-        set = 1;
-      }
-      else if(n == 2 || n == 3){  //if there are 2 or 3 possible places for the current value on this row
-        row --;
-        set = 2;
+        rw = 1;
       }
 
       n = 0;
@@ -252,60 +231,27 @@ int Sudoku::checkCols(){
 
   int n = 0; //how many cells of this col can assume this value? this variable stores the answer to this question
   int changes = 0;
-  int set = 0; //0 -> reading, 1 -> writing, 2 -> advanced check
-  int sectors[3] = {0,0,0};
+  bool rw = 0; //0 -> reading, 1 -> writing
 
   for(int currentValue = 1; currentValue <= 9; currentValue++){
     for(int col = 0; col < 9; col ++){
       for(int row = 0; row < 9; row ++){
         if(cell[row][col].canItBe(currentValue) && !cell[row][col].value()){
-          if(set == 0) n ++;
+          if(rw == 0) n ++;
           //found one and it's currently reading the col
-          else if(set == 1){
+          else if(rw == 1){
           //found one but we already read the col, we were just searching for this cell to write its value
             setValue(currentValue, row, col);
-            set = 0;
+            rw = 0;
             changes++;
             row = 9; //get out of the for loop
           }
-          else if(set == 2){
-          //found one but we already read the col, we are just checking if all the possibilities are in the same sector
-            if(!sectors[0]) sectors[0] = sector(row,col);
-            else if(!sectors[1]) sectors[1] = sector(row,col);
-            else if(!sectors[2]) sectors[2] = sector(row,col);
-          }
-        }
-
-        if(row == 8 && set == 2){ //if this is the last row iteration and we are doing advanced check (set = 2)
-          if(!sectors[2]) sectors[2] = sectors[1];
-          //if the sectors[2] equals 0, it means that there were only 2 possible places
-          //so we write the value of sectors[1] on it to treate this as we would if there were 3 possible places
-          if((sectors[0] == sectors[1]) && (sectors[1] == sectors[2])){
-          //if all the possibilities are in the same sector
-          //iterate throughout the sector and say to the cells out of the row that it cant be the current value
-            for(int i = 0; i < 3; i++){
-              for(int j = 0; j < 3; j++){
-                if(col != (firstColOfSector(sectors[0]) + j) //if this is not the current col
-                && cell[firstRowOfSector(sectors[0]) + i][firstColOfSector(sectors[0]) + j].canItBe(currentValue)){
-                  cell[firstRowOfSector(sectors[0]) + i][firstColOfSector(sectors[0]) + j].cannotBe(currentValue);
-                  changes++;
-                  cout << "done that fancy thing in the cols" << endl;
-                }
-              }
-            }
-          }
-          set = 0;
-          sectors[0] = sectors[1] = sectors[2] = 0;
         }
       }
 
       if(n == 1){
         col --;
-        set = 1;
-      }
-      else if(n == 2 || n == 3){  //if there are 2 or 3 possible places for the current value on this row
-        col --;
-        set = 2;
+        rw = 1;
       }
 
       n = 0;
@@ -320,7 +266,155 @@ int Sudoku::checkSectors(){
 
   int n = 0; //how many cells of this row can assume this value? this variable stores the answer to this question
   int changes = 0;
-  int set = 0; //0 -> reading, 1 -> writing
+  bool rw = 0; //0 -> reading, 1 -> writing
+
+  for(int currentValue = 1; currentValue <= 9; currentValue++){
+    for(int sec = 1; sec <= 9; sec ++){
+      for(int row = firstRowOfSector(sec); row < (3 + firstRowOfSector(sec)); row ++){
+        for(int col = firstColOfSector(sec); col < (3 + firstColOfSector(sec)); col ++){
+          if(cell[row][col].canItBe(currentValue) && !cell[row][col].value()){
+            if(rw == 0) n ++; //found one and it's currently reading the sector
+            else if(rw == 1){ //found one but we already read the sector, we were just searching for this cell to write its value
+              setValue(currentValue, row, col);
+              rw = 0;
+              changes++;
+              row = col = 9; //get out of the for loop
+            }
+          }
+
+        }//end for
+      }//end for
+
+      if(n == 1){
+        sec --;
+        rw = 1;
+      }
+
+      n = 0;
+    }
+  }
+
+  return changes;
+}
+
+//Checks rows and returns number of changes
+int Sudoku::proCheckRows(){
+
+  int n = 0; //how many cells of this row can assume this value? this variable stores the answer to this question
+  int changes = 0;
+  int set = 0; //0 -> reading, 1 -> removing candidates
+  int sectors[3] = {0,0,0};
+
+  for(int currentValue = 1; currentValue <= 9; currentValue++){
+    for(int row = 0; row < 9; row ++){
+      for(int col = 0; col < 9; col ++){
+        if(cell[row][col].canItBe(currentValue) && (!cell[row][col].value())){
+          if(set == 0) n ++;
+          //found one and it's currently reading the row
+          else if(set == 1){
+          //found one but we already read the row, we are just checking if all the possibilities are in the same sector
+            if(!sectors[0]) sectors[0] = sector(row,col);
+            else if(!sectors[1]) sectors[1] = sector(row,col);
+            else if(!sectors[2]) sectors[2] = sector(row,col);
+          }
+        }
+
+        if(col == 8 && set == 1){ //if this is the last col iteration and we are doing advanced check (set = 1)
+          if(!sectors[2]) sectors[2] = sectors[1];
+          //if the sectors[2] equals 0, it means that there were only 2 possible places
+          //so we write the value of sectors[1] on it to treat this as we would if there were 3 possible places
+          if((sectors[0] == sectors[1]) && (sectors[1] == sectors[2])){
+          //if all the possibilities are in the same sector
+          //iterate throughout the sector and say to the cells out of the row that it cant be the current value
+            for(int i = 0; i < 3; i++){
+              for(int j = 0; j < 3; j++){
+                if(row != (firstRowOfSector(sectors[0]) + i) //if this is not the current row
+                && cell[firstRowOfSector(sectors[0]) + i][firstColOfSector(sectors[0]) + j].canItBe(currentValue)){
+                  cell[firstRowOfSector(sectors[0]) + i][firstColOfSector(sectors[0]) + j].cannotBe(currentValue);
+                  changes++;
+                }
+              }
+            }
+          }
+          set = 0;
+          sectors[0] = sectors[1] = sectors[2] = 0;
+        }
+      }
+
+      if(n == 2 || n == 3){  //if there are 2 or 3 possible places for the current value on this row
+        row --;
+        set = 1;
+      }
+
+      n = 0;
+    }
+  }
+
+  return changes;
+}
+
+//Checks collumns and returns number of changes
+int Sudoku::proCheckCols(){
+
+  int n = 0; //how many cells of this col can assume this value? this variable stores the answer to this question
+  int changes = 0;
+  int set = 0; //0 -> reading, 1 -> removing candidates
+  int sectors[3] = {0,0,0};
+
+  for(int currentValue = 1; currentValue <= 9; currentValue++){
+    for(int col = 0; col < 9; col ++){
+      for(int row = 0; row < 9; row ++){
+        if(cell[row][col].canItBe(currentValue) && !cell[row][col].value()){
+          if(set == 0) n ++;
+          //found one and it's currently reading the col
+          else if(set == 1){
+          //found one but we already read the col, we are just checking if all the possibilities are in the same sector
+            if(!sectors[0]) sectors[0] = sector(row,col);
+            else if(!sectors[1]) sectors[1] = sector(row,col);
+            else if(!sectors[2]) sectors[2] = sector(row,col);
+          }
+        }
+
+        if(row == 8 && set == 1){ //if this is the last row iteration and we are doing advanced check (set = 2)
+          if(!sectors[2]) sectors[2] = sectors[1];
+          //if the sectors[2] equals 0, it means that there were only 2 possible places
+          //so we write the value of sectors[1] on it to treate this as we would if there were 3 possible places
+          if((sectors[0] == sectors[1]) && (sectors[1] == sectors[2])){
+          //if all the possibilities are in the same sector
+          //iterate throughout the sector and say to the cells out of the row that it cant be the current value
+            for(int i = 0; i < 3; i++){
+              for(int j = 0; j < 3; j++){
+                if(col != (firstColOfSector(sectors[0]) + j) //if this is not the current col
+                && cell[firstRowOfSector(sectors[0]) + i][firstColOfSector(sectors[0]) + j].canItBe(currentValue)){
+                  cell[firstRowOfSector(sectors[0]) + i][firstColOfSector(sectors[0]) + j].cannotBe(currentValue);
+                  changes++;
+                }
+              }
+            }
+          }
+          set = 0;
+          sectors[0] = sectors[1] = sectors[2] = 0;
+        }
+      }
+
+      if(n == 2 || n == 3){  //if there are 2 or 3 possible places for the current value on this row
+        col --;
+        set = 1;
+      }
+
+      n = 0;
+    }
+  }
+
+  return changes;
+}
+
+//Checks sectors and returns number of changes
+int Sudoku::proCheckSectors(){
+
+  int n = 0; //how many cells of this row can assume this value? this variable stores the answer to this question
+  int changes = 0;
+  int set = 0; //0 -> reading, 1 -> removing candidates
   int rows[3] = {-1,-1,-1};
   int cols[3] = {-1,-1,-1};
 
@@ -330,13 +424,7 @@ int Sudoku::checkSectors(){
         for(int col = firstColOfSector(sec); col < (3 + firstColOfSector(sec)); col ++){
           if(cell[row][col].canItBe(currentValue) && !cell[row][col].value()){
             if(set == 0) n ++; //found one and it's currently reading the sector
-            else if(set == 1){ //found one but we already read the sector, we were just searching for this cell to write its value
-              setValue(currentValue, row, col);
-              set = 0;
-              changes++;
-              row = col = 9; //get out of the for loop
-            }
-            else if(set == 2){
+            else if(set == 1){
             //found one but we already read the sector, we are just checking if all the possibilities are in the same sector
               if(rows[0] < 0) rows[0] = row;
               else if(rows[1] < 0) rows[1] = row;
@@ -348,7 +436,7 @@ int Sudoku::checkSectors(){
             }
           }
 
-          if((row == (2 + firstRowOfSector(sec))) && (col == (2 + firstColOfSector(sec))) && (set == 2)){
+          if((row == (2 + firstRowOfSector(sec))) && (col == (2 + firstColOfSector(sec))) && (set == 1)){
           //if this is the last sec iteration and we are doing advanced check (set = 2)
             if(rows[2] < 0) rows[2] = rows[1];
             //if the rows[2] equals 0, it means that there were only 2 possible places
@@ -364,7 +452,6 @@ int Sudoku::checkSectors(){
                 //if this is not the current sector
                   cell[rows[0]][i].cannotBe(currentValue);
                   changes++;
-                  cout << "done that fancy thing in the secs" << endl;
                 }//end if
               }//end for
             }//end if
@@ -387,13 +474,9 @@ int Sudoku::checkSectors(){
         }//end for
       }//end for
 
-      if(n == 1){
+      if(n == 2 || n == 3){  //if there are 2 or 3 possible places for the current value on this row
         sec --;
         set = 1;
-      }
-      else if(n == 2 || n == 3){  //if there are 2 or 3 possible places for the current value on this row
-        sec --;
-        set = 2;
       }
 
       n = 0;
@@ -432,6 +515,4 @@ void Sudoku::showPossibilites(){
   }
   cout << endl;
 }
-
-
 /***************End of Sudoku methods**********************/

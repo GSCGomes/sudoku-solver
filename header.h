@@ -19,6 +19,8 @@ int firstRowOfSector(int);
 //Given sector it returns its first col
 int firstColOfSector(int);
 
+//Writes 0 in all elements of the matrix
+void cleanMatrix(int***, int, int, int );
 
 class Cell{
 
@@ -84,6 +86,9 @@ public:
   //Fills the cells with data from file
   void writeFromFile(FILE * );
 
+  //Writes the file with finished sudoku
+  void writeToFile(FILE * );
+
   //Prints the whole sudoku on screen
   void printSudoku();
 
@@ -98,6 +103,15 @@ public:
 
   //Checks sectors and returns number of changes
   int checkSectors();
+
+  //Checks rows and returns number of changes
+  int proCheckRows();
+
+  //Checks collumns and returns number of changes
+  int proCheckCols();
+
+  //Checks sectors and returns number of changes
+  int proCheckSectors();
 
   void showPossibilites(int);
 
