@@ -6,4 +6,3 @@ Just run the makefile. Run the following command to execute:
 
 ```
 ./sudoku-solver input_filename
-...
