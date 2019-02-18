@@ -1,7 +1,7 @@
 # sudoku-solver
 Simple sudoku solver made in C++.
 
-# Compilation and Executino
+# Compilation and Execution
 Just run the makefile. Run the following command to execute:
 
 ```
