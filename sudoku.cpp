@@ -2,9 +2,6 @@
 //Definition of the methods from the cell and sudoku classes
 
 #include "header.h"
-#include <iostream>
-#include <stdio.h>
-using namespace std;
 
 /********************Cell methods**************************/
 //Constructor
@@ -50,7 +47,7 @@ void Cell::setValue(int value){
   hashCheck_[value - 1] = TRUE;
 };
 
-//tells to the cell that it can't be a certain value
+//tells to the cell that it can't be the given value
 void Cell::cannotBe(int value){
   //the input value must be between 1 and 9 but the index of the array must be between 0 and 8
   //so we have to decrement the value to convert it
@@ -92,8 +89,8 @@ void Sudoku::setValue(int in_value, int row, int col){
     cell[row][col].setValue(in_value);
     int sec = sector(row, col);
     if(!sec){
-      cout << "error position 1" << endl;
-      return;
+      cout << "fatal error, please report this issue" << endl;
+      exit(1);
     }
 
     //modify hashCheck of cells on same row
@@ -295,6 +292,8 @@ int Sudoku::checkSectors(){
 //Checks if sudoku is valid in returns TRUE or FALSE
 bool Sudoku::amIValid(){
 
+  //if any cell of the sudoku grid has no candidates, than the sudoku is not valid
+
   for(int i = 0; i < 9; i ++)
     for(int j = 0; j < 9; j ++){
       if( !(cell[i][j].possibilities()) )
@@ -304,6 +303,8 @@ bool Sudoku::amIValid(){
   return TRUE;
 }
 
+//Receives a number and tells what cells have this number as a valid candidate
+//USEFUL WHILE DEVELOPING
 void Sudoku::showPossibilites(int in_value){
 
   cout << endl << "Possibilities for number: " << in_value << endl << endl;;
@@ -319,6 +320,8 @@ void Sudoku::showPossibilites(int in_value){
   cout << endl;
 }
 
+//Prints how many candidate each sudoku cell has
+//USEFUL WHILE DEVELOPING
 void Sudoku::showPossibilites(){
 
   cout << endl << "Possibilities per cell" << endl << endl;;

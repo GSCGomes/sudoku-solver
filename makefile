@@ -1,16 +1,16 @@
 CC = g++
 CFLAGS = -Wall -c
 
-sudoku-solver: solver.o sudoku.o main.o
-	$(CC) -o sudoku-solver solver.o sudoku.o main.o
+sudoku-solver: functions.o sudoku.o main.o
+	$(CC) -o sudoku-solver functions.o sudoku.o main.o
 
-solver.o: solver.cpp header.h
-	$(CC) $(CFLAGS) solver.cpp
+functions.o: functions.cpp header.h
+	$(CC) $(CFLAGS) functions.cpp
 
-sudoku.o : sudoku.cpp solver.cpp header.h
+sudoku.o : sudoku.cpp functions.cpp header.h
 	$(CC) $(CFLAGS) sudoku.cpp
 
-main.o : main.cpp sudoku.cpp solver.cpp header.h
+main.o : main.cpp sudoku.cpp functions.cpp header.h
 	$(CC) $(CFLAGS) main.cpp
 
 clean :

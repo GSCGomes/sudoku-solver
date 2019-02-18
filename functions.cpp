@@ -1,24 +1,25 @@
 //solver.cpp, Guilherme Gomes
 //This file contains some functions used to solve this problem
 
-
-// #include "header.h"
-#include <iostream>
-using namespace std;
+#include "header.h"
 
 //Receives coordinate and returns sector number, 0 for invalid coordinates
 int sector(int row, int col){
 //the sudoku grid has 9 3x3 sectors which will be
 //labelled as follows:
+//
 //   1 | 2 | 3
+//  ------------
 //   4 | 5 | 6
+//  -----------
 //   7 | 8 | 9
 //
 
   int exit = 0;
 
   if((row < 0) || (col < 0) || (row > 8) || (col > 8)){ //if coordinates are invalid
-    cout << "invalid coordinates." << " row = " << row << "  col = " << col << endl;
+    cout << "Invalid coordinates." << " row = " << row << "  col = " << col << endl;
+    cout << "Please report this issue." << endl;
     return exit;
   }
 

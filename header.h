@@ -8,7 +8,17 @@
 #define TRUE 1
 #define FALSE 0
 
+#define MAX_DEPTH 47 //47 is the depth needed to solve a blank sudoku
+
+#include <iostream>
 #include <stdio.h>
+using namespace std;
+
+typedef struct Guess{
+  int row;
+  int col;
+  int value;
+} Guess;
 
 //Receives coordinate and returns sector number, 0 for invalid coordinates
 int sector(int, int);
@@ -71,10 +81,10 @@ public:
   //Destructor
   ~Sudoku();
 
-  //Sets the value of a given cell
+  //Sets the value of a given cell and removes that value as a candidate to that cell's neighbors
   void setValue(int, int, int);
 
-  //Fills the cells with data from file
+  //Fills the sudoku grid with data from file
   void writeFromFile(FILE * );
 
   //Writes the file with finished sudoku
@@ -98,8 +108,12 @@ public:
   //Checks if sudoku is valid in returns TRUE or FALSE
   bool amIValid();
 
+  //Receives a number and tells what cells have this number as a valid candidate
+  //USEFUL WHILE DEVELOPING
   void showPossibilites(int);
 
+  //Prints how many candidate each sudoku cell has
+  //USEFUL WHILE DEVELOPING
   void showPossibilites();
 
 };
