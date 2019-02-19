@@ -1,5 +1,5 @@
-//solver.cpp, Guilherme Gomes
-//This file contains some functions used to solve this problem
+//functions.cpp, Guilherme Gomes
+//This file contains some other functions used to solve this problem
 
 #include "header.h"
 

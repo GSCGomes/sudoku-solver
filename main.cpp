@@ -27,7 +27,7 @@
 //   If we did all of the scans multiple times and reached a spot where they were causing
 //   no change in the sudoku, than it's time for guessing. To make a better choice for the
 //   guess, we iterate through the grid and search for a cell with the minimum number of
-//   candidates. If the choice leads to an invalid sudoku, we go back to the last backup and try again.
+//   candidates. If the choice leads to an invalid sudoku grid, we go back to the last backup and try again.
 //
 // *****************************************************************************************************
 
@@ -90,7 +90,7 @@ int main(int argc, char** argv){
 
         backup[depth] = S; //stores the valid sudoku in a backup variable
 
-        int nP = 1; //number of candidates that a cell must have to be used to guess
+        int nP = 1; //number of possibilities that a cell must have to be used to guess
 
         guess[depth].value = 0;
         guess[depth].row = guess[depth].col = -1;
@@ -126,7 +126,7 @@ int main(int argc, char** argv){
       backup[depth].cell[guess[depth].row][guess[depth].col].cannotBe(guess[depth].value);
       //tells the cell that it cannot assume the guessed value
       S = backup[depth]; //goes back to the backup version
-      if(!(S.amIValid())){
+      if(!(S.amIValid())){ //if this backup version is also invalid, goes back to the backup version before this one
         depth--;
         backup[depth].cell[guess[depth].row][guess[depth].col].cannotBe(guess[depth].value);
         S = backup[depth];
@@ -135,15 +135,14 @@ int main(int argc, char** argv){
     }
   }
 
-  cout << endl << " Done." << endl << " The number of sweeps through the grid was " << sweeps << "." << endl;
-
-  if(depth) cout << " The depth of the guessing tree was " << depth << "." << endl;
-  else cout << " No harder than average, guessing was not necessary to solve this." <<  endl;
-
   cout << endl << " And this is your solved sudoku: " << endl;
   S.printSudoku();
 
-  cout << " We wrote this solution in a file named " << OUTPUT_FILENAME << endl << endl;;
+  cout << endl << " The number of sweeps through the grid was " << sweeps << "." << endl;
+  if(depth) cout << " The depth of the guessing tree was " << depth << "." << endl;
+  else cout << " No harder than average, guessing was not necessary to solve this." <<  endl;
+
+  cout << endl << " We wrote this solution in a file named " << OUTPUT_FILENAME << endl << endl;;
   // S.showPossibilites();
   S.writeToFile(output);
 
