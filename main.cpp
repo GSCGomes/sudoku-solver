@@ -122,16 +122,21 @@ int main(int argc, char** argv){
       }
     }
     else if(!(S.amIValid())){
-      depth--;
-      backup[depth].cell[guess[depth].row][guess[depth].col].cannotBe(guess[depth].value);
-      //tells the cell that it cannot assume the guessed value
-      S = backup[depth]; //goes back to the backup version
-      if(!(S.amIValid())){ //if this backup version is also invalid, goes back to the backup version before this one
+      if(!depth){ //the input is not valid
+        cout << endl << endl << " This sudoku puzzle is not valid. Exiting." << endl << endl;
+        return 1;
+      } else{
         depth--;
         backup[depth].cell[guess[depth].row][guess[depth].col].cannotBe(guess[depth].value);
-        S = backup[depth];
+        //tells the cell that it cannot assume the guessed value
+        S = backup[depth]; //goes back to the backup version
+        if(!(S.amIValid())){ //if this backup version is also invalid, goes back to the backup version before this one
+          depth--;
+          backup[depth].cell[guess[depth].row][guess[depth].col].cannotBe(guess[depth].value);
+          S = backup[depth];
+        }
+        changes++;
       }
-      changes++;
     }
   }
 
