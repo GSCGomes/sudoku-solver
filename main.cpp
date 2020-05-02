@@ -148,7 +148,6 @@ int main(int argc, char** argv){
   else cout << " No harder than average, guessing was not necessary to solve this." <<  endl;
 
   cout << endl << " We wrote this solution in a file named " << OUTPUT_FILENAME << endl << endl;;
-  // S.showPossibilites();
   S.writeToFile(output);
 
   fclose(input);
