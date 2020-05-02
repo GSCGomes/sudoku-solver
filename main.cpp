@@ -36,30 +36,15 @@
 
 #define OUTPUT_FILENAME "output.csv" //any changes here must be replied in the makefile
 
-int main(int argc, char** argv){
-
-  cout << endl << "*********** SUDOKU SOLVER made by Guilherme Gomes ***********" << endl;
-
-  FILE * input;
-  if(! (input = fopen(argv[1], "r") )){
-    cout << "Error openning sudoku file. Exiting." << endl;
-    return -1;
-  }
-
-  FILE * output;
-  if(! (output = fopen(OUTPUT_FILENAME, "w") )){
-    cout << "Error creating output file. Exiting." << endl;
-    return -1;
-  }
-
-  cout << endl << " This is the sudoku puzzle you entered: " << endl;
-
+Sudoku solve(FILE * input){
+/*{{{*/
   Sudoku S;
 
   Sudoku backup[MAX_DEPTH];
   Guess guess[MAX_DEPTH];
   int depth = 0;
 
+  cout << endl << " This is the sudoku puzzle you entered: " << endl;
   S.writeFromFile(input);
   S.printSudoku();
 
@@ -124,7 +109,7 @@ int main(int argc, char** argv){
     else if(!(S.amIValid())){
       if(!depth){ //the input is not valid
         cout << endl << endl << " This sudoku puzzle is not valid. Exiting." << endl << endl;
-        return 1;
+        exit(1);
       } else{
         depth--;
         backup[depth].cell[guess[depth].row][guess[depth].col].cannotBe(guess[depth].value);
@@ -148,7 +133,27 @@ int main(int argc, char** argv){
   else cout << " No harder than average, guessing was not necessary to solve this." <<  endl;
 
   cout << endl << " We wrote this solution in a file named " << OUTPUT_FILENAME << endl << endl;;
-  S.writeToFile(output);
+  return S;
+/*}}}*/
+}
+
+int main(int argc, char** argv){
+
+  cout << endl << "*********** SUDOKU SOLVER made by Guilherme Gomes ***********" << endl;
+
+  FILE * input;
+  if(! (input = fopen(argv[1], "r") )){
+    cout << "Error openning sudoku file. Exiting." << endl;
+    return -1;
+  }
+
+  FILE * output;
+  if(! (output = fopen(OUTPUT_FILENAME, "w") )){
+    cout << "Error creating output file. Exiting." << endl;
+    return -1;
+  }
+
+  (solve(input)).writeToFile(output);
 
   fclose(input);
   fclose(output);
