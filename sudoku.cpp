@@ -89,7 +89,7 @@ void Sudoku::setValue(int in_value, int row, int col){
     cell[row][col].setValue(in_value);
     int sec = sector(row, col);
     if(!sec){
-      cout << "fatal error, please report this issue" << endl;
+      std::cout << "fatal error, please report this issue" << std::endl;
       exit(1);
     }
 
@@ -152,19 +152,19 @@ void Sudoku::writeToFile(FILE * file){
 void Sudoku::printSudoku(){
 
   for(int i = 0; i < 9; i++){
-    cout << endl << "  ";
+    std::cout << std::endl << "  ";
     for(int j = 0; j < 9; j++){
-      if(cell[i][j].value()) cout << " " << cell[i][j].value() << " ";
-      else cout << "   ";
-      if(j == 2 || j == 5) cout << "|";
+      if(cell[i][j].value()) std::cout << " " << cell[i][j].value() << " ";
+      else std::cout << "   ";
+      if(j == 2 || j == 5) std::cout << "|";
     }
     if(i == 2 || i == 5){
-      cout << endl << "  ";
-      for(int k = 0; k < 30; k++) cout << "-";
+      std::cout << std::endl << "  ";
+      for(int k = 0; k < 30; k++) std::cout << "-";
     }
   }
 
-  cout << endl << endl;
+  std::cout << std::endl << std::endl;
 }
 
 //Checks cells' possibilities and writes the value in cells with only one possible value, returns number of changes
@@ -307,33 +307,33 @@ bool Sudoku::amIValid(){
 //USEFUL WHILE DEVELOPING
 void Sudoku::showPossibilites(int in_value){
 
-  cout << endl << "Possibilities for number: " << in_value << endl << endl;;
+  std::cout << std::endl << "Possibilities for number: " << in_value << std::endl << std::endl;;
   for(int i = 0; i < 9; i++){
     for(int j = 0; j < 9; j++){
-      cout << " " << cell[i][j].canItBe(in_value) << " ";
-      if(j == 2 || j == 5) cout << "|";
+      std::cout << " " << cell[i][j].canItBe(in_value) << " ";
+      if(j == 2 || j == 5) std::cout << "|";
     }
     if(i == 2 || i == 5)
-      cout << endl << "-----------------------------";
-    cout << endl;
+      std::cout << std::endl << "-----------------------------";
+    std::cout << std::endl;
   }
-  cout << endl;
+  std::cout << std::endl;
 }
 
 //Prints how many candidate each sudoku cell has
 //USEFUL WHILE DEVELOPING
 void Sudoku::showPossibilites(){
 
-  cout << endl << "Possibilities per cell" << endl << endl;;
+  std::cout << std::endl << "Possibilities per cell" << std::endl << std::endl;;
   for(int i = 0; i < 9; i++){
     for(int j = 0; j < 9; j++){
-      cout << " " << cell[i][j].possibilities() << " ";
-      if(j == 2 || j == 5) cout << "|";
+      std::cout << " " << cell[i][j].possibilities() << " ";
+      if(j == 2 || j == 5) std::cout << "|";
     }
     if(i == 2 || i == 5)
-      cout << endl << "-----------------------------";
-    cout << endl;
+      std::cout << std::endl << "-----------------------------";
+    std::cout << std::endl;
   }
-  cout << endl;
+  std::cout << std::endl;
 }
 /***************End of Sudoku methods**********************/

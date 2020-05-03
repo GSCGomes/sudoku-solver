@@ -31,25 +31,53 @@
 //
 // *****************************************************************************************************
 
-
 #include "header.h"
 
 #define OUTPUT_FILENAME "output.csv" //any changes here must be replied in the makefile
 
-Sudoku solve(FILE * input){
+void solve(Sudoku & S);
+
+int main(int argc, char** argv){
 /*{{{*/
+  FILE * input;
+  if(! (input = fopen(argv[1], "r") )){
+    std::cout << "Error openning sudoku file. Exiting." << std::endl;
+    return -1;
+  }
+
+  FILE * output;
+  if(! (output = fopen(OUTPUT_FILENAME, "w") )){
+    std::cout << "Error creating output file. Exiting." << std::endl;
+    return -1;
+  }
+
   Sudoku S;
+  S.writeFromFile(input);
+
+  solve(S);
+
+  S.writeToFile(output);
+
+  fclose(input);
+  fclose(output);
+
+  return 0;/*}}}*/
+}
+
+void solve(Sudoku & S){
+/*{{{*/
 
   Sudoku backup[MAX_DEPTH];
   Guess guess[MAX_DEPTH];
+
   int depth = 0;
-
-  cout << endl << " This is the sudoku puzzle you entered: " << endl;
-  S.writeFromFile(input);
-  S.printSudoku();
-
   int changes = 1;
   int sweeps = 0;
+
+  std::cout << std::endl << "*********** SUDOKU SOLVER made by Guilherme Gomes ***********" << std::endl
+            << std::endl << " This is the sudoku puzzle you entered: " << std::endl;
+
+  S.printSudoku();
 
   //main program loop, do some standard checks first,
   //if we get stuck do some more advanced checks
@@ -89,8 +117,8 @@ Sudoku solve(FILE * input){
             if((i == 0) && (j == 0) && (guess[depth].row == -1) && (guess[depth].col == -1)){
             //if this is the last iteration and we haven't found a cell with the given number of possibilities
               nP++; //increase number of possibilities
-              i = 9;
-              j = 9;
+              i = j = 9;
+              break;
               //go back to the start
             }
           }
@@ -102,13 +130,13 @@ Sudoku solve(FILE * input){
       }
       depth++;
       if(depth > MAX_DEPTH){
-        cout << " Max depth was reached, this is a really hard sudoku, exiting." << endl << endl;
+        std::cout << " Max depth was reached, this is a really hard sudoku, exiting." << std::endl << std::endl;
         exit(1);
       }
     }
     else if(!(S.amIValid())){
       if(!depth){ //the input is not valid
-        cout << endl << endl << " This sudoku puzzle is not valid. Exiting." << endl << endl;
+        std::cout << std::endl << std::endl << " This sudoku puzzle is not valid. Exiting." << std::endl << std::endl;
         exit(1);
       } else{
         depth--;
@@ -125,38 +153,14 @@ Sudoku solve(FILE * input){
     }
   }
 
-  cout << endl << " And this is your solved sudoku: " << endl;
+  std::cout << std::endl << " And this is your solved sudoku: " << std::endl;
   S.printSudoku();
 
-  cout << endl << " The number of sweeps through the grid was " << sweeps << "." << endl;
-  if(depth) cout << " The depth of the guessing tree was " << depth << "." << endl;
-  else cout << " No harder than average, guessing was not necessary to solve this." <<  endl;
+  std::cout << std::endl << " The number of sweeps through the grid was " << sweeps << "." << std::endl;
+  if(depth) std::cout << " The depth of the guessing tree was " << depth << "." << std::endl;
+  else std::cout << " No harder than average, guessing was not necessary to solve this." <<  std::endl;
 
-  cout << endl << " We wrote this solution in a file named " << OUTPUT_FILENAME << endl << endl;;
-  return S;
+  std::cout << std::endl << " We wrote this solution in a file named " << OUTPUT_FILENAME << std::endl << std::endl;;
+
 /*}}}*/
-}
-
-int main(int argc, char** argv){
-
-  cout << endl << "*********** SUDOKU SOLVER made by Guilherme Gomes ***********" << endl;
-
-  FILE * input;
-  if(! (input = fopen(argv[1], "r") )){
-    cout << "Error openning sudoku file. Exiting." << endl;
-    return -1;
-  }
-
-  FILE * output;
-  if(! (output = fopen(OUTPUT_FILENAME, "w") )){
-    cout << "Error creating output file. Exiting." << endl;
-    return -1;
-  }
-
-  (solve(input)).writeToFile(output);
-
-  fclose(input);
-  fclose(output);
-
-  return 1;
 }

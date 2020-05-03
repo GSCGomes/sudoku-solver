@@ -11,8 +11,6 @@
 #define MAX_DEPTH 47 //47 is the depth needed to solve a blank sudoku
 
 #include <iostream>
-#include <stdio.h>
-using namespace std;
 
 typedef struct Guess{
   int row;
